@@ -24,19 +24,20 @@ public class MyDataRestConfig implements RepositoryRestConfigurer {
     public MyDataRestConfig(EntityManager theEntityManager) {
         entityManager = theEntityManager;
     }
-    
+
+
     @Override
     public void configureRepositoryRestConfiguration(RepositoryRestConfiguration config, CorsRegistry cors) {
 
-        HttpMethod[] theUnsupportedActions = {HttpMethod.PUT, HttpMethod.POST, HttpMethod.DELETE, HttpMethod.PATCH};
+        HttpMethod[] theUnsupportedActions = {HttpMethod.PUT, HttpMethod.POST, HttpMethod.DELETE};
 
-        // disable HTTP methods for Product: PUT, POST, DELETE and PATCH
+        // disable HTTP methods for Product: PUT, POST and DELETE
         config.getExposureConfiguration()
                 .forDomainType(Product.class)
                 .withItemExposure((metdata, httpMethods) -> httpMethods.disable(theUnsupportedActions))
                 .withCollectionExposure((metdata, httpMethods) -> httpMethods.disable(theUnsupportedActions));
 
-        // disable HTTP methods for ProductCategory: PUT, POST, DELETE and PATCH
+        // disable HTTP methods for ProductCategory: PUT, POST and DELETE
         config.getExposureConfiguration()
                 .forDomainType(ProductCategory.class)
                 .withItemExposure((metdata, httpMethods) -> httpMethods.disable(theUnsupportedActions))
@@ -44,7 +45,6 @@ public class MyDataRestConfig implements RepositoryRestConfigurer {
 
         // call an internal helper method
         exposeIds(config);
-
     }
 
     private void exposeIds(RepositoryRestConfiguration config) {
@@ -67,5 +67,13 @@ public class MyDataRestConfig implements RepositoryRestConfigurer {
         Class[] domainTypes = entityClasses.toArray(new Class[0]);
         config.exposeIdsFor(domainTypes);
     }
-
 }
+
+
+
+
+
+
+
+
+
