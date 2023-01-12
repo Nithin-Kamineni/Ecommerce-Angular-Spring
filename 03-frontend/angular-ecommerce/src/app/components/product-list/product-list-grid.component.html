@@ -5,9 +5,7 @@
 
                 <!-- loop over the collection of products -->
                 <div *ngFor="let tempProduct of products" class="col-md-3">
-                    <div>
-                        search functionality
-                    </div>
+
                     <div class="product-box">
                         <img src="{{ tempProduct.imageUrl }}" class="img-responsive">
                         <h1>{{ tempProduct.name }}</h1>
@@ -16,6 +14,12 @@
                     </div>
 
                 </div>
+
+                <!-- if products empty then display a message-->
+                <div *ngIf="products?.length == 0" class="alert alert-warning col-md-12" role="alert">
+                    No products found.
+                </div>
+
             </div>
         </div>
     </div>
