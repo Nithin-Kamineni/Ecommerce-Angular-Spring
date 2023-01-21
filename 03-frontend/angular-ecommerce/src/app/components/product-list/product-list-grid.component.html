@@ -17,7 +17,7 @@
                         </a>
                         
                         <div class="price">{{ tempProduct.unitPrice | currency:'USD' }}</div>
-                        <a href="#" class="primary-btn">Add to cart</a>
+                        <button (click)="addToCart(tempProduct)" class="btn btn-primary btn-sm">Add to cart</button>
                     </div>
 
                 </div>
@@ -42,6 +42,7 @@
                                                 [pageSize]="thePageSize"
                                                 [collectionSize]="theTotalElements"
                                                 [maxSize]="5"
+                                                [boundaryLinks]="true"
                                                 (pageChange)="listProducts()">
 
                                 </ngb-pagination>
@@ -70,3 +71,9 @@
         </div>
     </div>
 </div>
+
+
+
+
+
+
