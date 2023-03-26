@@ -20,6 +20,13 @@
 	</properties>
 
 	<dependencies>
+
+		<dependency>
+			<groupId>com.stripe</groupId>
+			<artifactId>stripe-java</artifactId>
+			<version>21.9.0</version>
+		</dependency>
+
 		<dependency>
 			<groupId>com.okta.spring</groupId>
 			<artifactId>okta-spring-boot-starter</artifactId>
