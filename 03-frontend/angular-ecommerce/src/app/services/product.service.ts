@@ -34,6 +34,7 @@ export class ProductService {
                     + `&page=${thePage}&size=${thePageSize}`;
 
     console.log(`Getting products from - ${searchUrl}`);
+    
     return this.httpClient.get<GetResponseProducts>(searchUrl);
   }
 

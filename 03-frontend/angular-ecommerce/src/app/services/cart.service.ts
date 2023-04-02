@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { CartItem } from '../common/cart-item';
 import { BehaviorSubject, Subject } from 'rxjs';
-import { Product } from '../common/product';
 
 @Injectable({
   providedIn: 'root'
@@ -18,15 +17,15 @@ export class CartService {
 
   constructor() { 
 
-    // read data from storage
-    let data = JSON.parse(this.storage.getItem('cartItems')!);
+      // read data from storage
+      let data = JSON.parse(this.storage.getItem('cartItems'));
 
-    if (data != null) {
-      this.cartItems = data;
-      
-      // compute totals based on the data that is read from storage
-      this.computeCartTotals();
-    }
+      if (data != null) {
+        this.cartItems = data;
+        
+        // compute totals based on the data that is read from storage
+        this.computeCartTotals();
+      }
 
   }
 
@@ -34,13 +33,12 @@ export class CartService {
 
     // check if we already have the item in our cart
     let alreadyExistsInCart: boolean = false;
-    // let existingCartItem: CartItem = undefined;
-    let existingCartItem: CartItem = new CartItem();
+    let existingCartItem: CartItem = undefined;
 
     if (this.cartItems.length > 0) {
       // find the item in the cart based on item id
 
-      existingCartItem = this.cartItems.find( tempCartItem => tempCartItem.id === theCartItem.id )!;
+      existingCartItem = this.cartItems.find( tempCartItem => tempCartItem.id === theCartItem.id );
 
       // check if we found it
       alreadyExistsInCart = (existingCartItem != undefined);
@@ -65,7 +63,7 @@ export class CartService {
     let totalQuantityValue: number = 0;
 
     for (let currentCartItem of this.cartItems) {
-      totalPriceValue += currentCartItem.quantity * currentCartItem.unitPrice!;
+      totalPriceValue += currentCartItem.quantity * currentCartItem.unitPrice;
       totalQuantityValue += currentCartItem.quantity;
     }
 
@@ -88,7 +86,7 @@ export class CartService {
 
     console.log('Contents of the cart');
     for (let tempCartItem of this.cartItems) {
-      const subTotalPrice = tempCartItem.quantity * tempCartItem.unitPrice!;
+      const subTotalPrice = tempCartItem.quantity * tempCartItem.unitPrice;
       console.log(`name: ${tempCartItem.name}, quantity=${tempCartItem.quantity}, unitPrice=${tempCartItem.unitPrice}, subTotalPrice=${subTotalPrice}`);
     }
 

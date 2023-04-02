@@ -1,8 +1,7 @@
 import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
-import { Inject, Injectable } from '@angular/core';
-import { OKTA_AUTH } from '@okta/okta-angular';
-import { OktaAuth } from '@okta/okta-auth-js';
-import { from, lastValueFrom, Observable } from 'rxjs';
+import { Injectable } from '@angular/core';
+import { OktaAuthService } from '@okta/okta-angular';
+import { from, Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -10,13 +9,13 @@ import { environment } from 'src/environments/environment';
 })
 export class AuthInterceptorService implements HttpInterceptor {
 
-  constructor(@Inject(OKTA_AUTH) private oktaAuth: OktaAuth) { }
+  constructor(private oktaAuth: OktaAuthService) { }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return from(this.handleAccess(request, next));
   }
 
-  private async handleAccess(request: HttpRequest<any>, next: HttpHandler): Promise<HttpEvent<any>> {
+  private async handleAccess(request: HttpRequest<any>, next: HttpHandler): Promise<HttpEvent<any>> { 
 
     // Only add an access token for secured endpoints
     const theEndpoint = environment.luv2shopApiUrl + '/orders';
@@ -25,7 +24,7 @@ export class AuthInterceptorService implements HttpInterceptor {
     if (securedEndpoints.some(url => request.urlWithParams.includes(url))) {
 
       // get access token
-      const accessToken = this.oktaAuth.getAccessToken();
+      const accessToken = await this.oktaAuth.getAccessToken();
 
       // clone the request and add new header with access token
       request = request.clone({
@@ -33,8 +32,9 @@ export class AuthInterceptorService implements HttpInterceptor {
           Authorization: 'Bearer ' + accessToken
         }
       });
+
     }
 
-    return await lastValueFrom(next.handle(request));
+    return next.handle(request).toPromise();
   }
 }

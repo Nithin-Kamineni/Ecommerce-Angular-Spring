@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { Injector, NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
 import { ProductListComponent } from './components/product-list/product-list.component';
@@ -20,41 +20,33 @@ import { LoginComponent } from './components/login/login.component';
 import { LoginStatusComponent } from './components/login-status/login-status.component';
 
 import {
-  OktaAuthGuard,
+  OKTA_CONFIG,
   OktaAuthModule,
   OktaCallbackComponent,
-  OKTA_CONFIG 
+  OktaAuthGuard
 } from '@okta/okta-angular';
-
-import { OktaAuth } from '@okta/okta-auth-js';
 
 import myAppConfig from './config/my-app-config';
 import { MembersPageComponent } from './components/members-page/members-page.component';
 import { OrderHistoryComponent } from './components/order-history/order-history.component';
 import { AuthInterceptorService } from './services/auth-interceptor.service';
 
-const oktaConfig = myAppConfig.oidc;
+const oktaConfig = Object.assign({
+  onAuthRequired: (oktaAuth, injector) => {
+    const router = injector.get(Router);
 
-const oktaAuth = new OktaAuth(oktaConfig);
-
-function sendToLoginPage(oktaAuth: OktaAuth, injector: Injector) {
-  // Use injector to access any service available within your application
-  const router = injector.get(Router);
-
-  // Redirect the user to your custom login page
-  router.navigate(['/login']);
-}
+    // Redirect the user to your custom login page
+    router.navigate(['/login']);
+  }
+}, myAppConfig.oidc);
 
 const routes: Routes = [
-  {path: 'order-history', component: OrderHistoryComponent, canActivate: [OktaAuthGuard],
-                    data: {onAuthRequired: sendToLoginPage} },
-
-  {path: 'members', component: MembersPageComponent, canActivate: [OktaAuthGuard],
-                    data: {onAuthRequired: sendToLoginPage} },
+  {path: 'order-history', component: OrderHistoryComponent, canActivate: [ OktaAuthGuard ]},
+  {path: 'members', component: MembersPageComponent, canActivate: [ OktaAuthGuard ]},
 
   {path: 'login/callback', component: OktaCallbackComponent},
   {path: 'login', component: LoginComponent},
-  
+
   {path: 'checkout', component: CheckoutComponent},
   {path: 'cart-details', component: CartDetailsComponent},
   {path: 'products/:id', component: ProductDetailsComponent},
@@ -89,7 +81,7 @@ const routes: Routes = [
     ReactiveFormsModule,
     OktaAuthModule
   ],
-  providers: [ProductService, { provide: OKTA_CONFIG, useValue: { oktaAuth }},
+  providers: [ProductService, { provide: OKTA_CONFIG, useValue: oktaConfig },
               {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true}],
   bootstrap: [AppComponent]
 })
